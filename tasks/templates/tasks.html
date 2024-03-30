@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<h1>Tasks</h1>
+<h1>Tareas pendientes</h1>
 {% for task in tasks %}
 <ul>
     <li>
@@ -10,6 +10,8 @@
             <p>{{task.description}}</p>
             <p>{{task.user}}</p>
             <p>{{task.important}}</p>
+
+            <p>{{task.datecompleted|date:'M j Y:i'}}</p>
         </a>
     </li>
 </ul>

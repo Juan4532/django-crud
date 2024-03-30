@@ -5,7 +5,7 @@
 <h1>Task detail</h1>
 {{task.title}}
 {{task.description}}
-{error}   
+{{error}}   
 
 <form method="POST">
     {% csrf_token %} 
@@ -16,6 +16,20 @@
 
 </form>
 
+
+<form action={% url 'completed_task' task.id %} method="POST">
+    {% csrf_token %} 
+    <button>
+        Completed
+    </button>
+</form>
+
+<form action={% url 'delete_task' task.id %} method="POST">
+    {% csrf_token %} 
+    <button>
+        Delete
+    </button>
+</form>
 
 {% endblock %}
 

@@ -7,6 +7,7 @@ from django.db import IntegrityError
 from .forms import TaskForm
 from .models import Tasks
 from django.shortcuts import get_object_or_404, render
+from django.utils import timezone
 
 
 # Create your views here.
@@ -72,6 +73,9 @@ def tasks(request):
     tasks = Tasks.objects.filter(user=request.user, datecompleted__isnull=True)
     return render(request, "tasks.html", {'tasks' : tasks})
 
+def tasks_completed(request):
+    tasks = Tasks.objects.filter(user=request.user, datecompleted__isnull=False).order_by("-datecompleted")
+    return render(request, "tasks.html", {'tasks' : tasks})
 
 
 def create_task(request):
@@ -108,3 +112,19 @@ def task_detail(request, task_id):
         except ValueError:
             return render (request, 'task_detail.html', {'task' : task, 'form' :form, 'eror' : "Error al actulizar"})
 
+
+def completed_task(request, task_id):
+    task = get_object_or_404(Tasks, pk=task_id, user=request.user)
+    if request.method == "POST":
+        task.datecompleted = timezone.now()
+        task.save()
+        return redirect('tasks')    
+
+
+def delete_task(request, task_id):
+    task = get_object_or_404(Tasks, pk=task_id, user=request.user)
+    if request.method == "POST":
+        task.delete()
+        return redirect('tasks')
+        #return render(request, "tasks.html", {'tasks' : tasks})
+        

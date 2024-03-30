@@ -2,4 +2,16 @@
 
 {% block content %}
 <h1>Tasks</h1>
+{% for task in tasks %}
+<ul>
+    <li>
+        <h1>{{task.title}}</h1>
+        <p>{{task.description}}</p>
+        <p>{{task.user}}</p>
+        <p>{{task.important}}</p> #indica la prioridad
+
+    </li>
+</ul>
+{% endfor %}
+
 {% endblock %}

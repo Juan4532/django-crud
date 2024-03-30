@@ -6,6 +6,8 @@ from django.contrib.auth import login, logout, authenticate
 from django.db import IntegrityError
 from .forms import TaskForm
 from .models import Tasks
+from django.shortcuts import get_object_or_404, render
+
 
 # Create your views here.
 
@@ -92,7 +94,17 @@ def create_task(request):
             })
     
         
-
-
-
+def task_detail(request, task_id):
+    if request.method == "GET":
+        task = get_object_or_404(Tasks ,pk=task_id, user=request.user)
+        form = TaskForm(instance = task)
+        return render (request, 'task_detail.html', {'task' : task, 'form' :form})
+    else:
+        try:
+            task = get_object_or_404(Tasks, pk=task_id, user=request.user)
+            form = TaskForm(request.POST, instance= task)
+            form.save()
+            return redirect('tasks') 
+        except ValueError:
+            return render (request, 'task_detail.html', {'task' : task, 'form' :form, 'eror' : "Error al actulizar"})
 

@@ -8,6 +8,7 @@ from .forms import TaskForm
 from .models import Tasks
 from django.shortcuts import get_object_or_404, render
 from django.utils import timezone
+from django.contrib.auth.decorators import login_required
 
 
 # Create your views here.
@@ -69,6 +70,7 @@ def signin(request):
             login(request,user)
             return redirect('tasks')
 
+@login_required
 def tasks(request):
     tasks = Tasks.objects.filter(user=request.user, datecompleted__isnull=True)
     return render(request, "tasks.html", {'tasks' : tasks})
@@ -77,7 +79,7 @@ def tasks_completed(request):
     tasks = Tasks.objects.filter(user=request.user, datecompleted__isnull=False).order_by("-datecompleted")
     return render(request, "tasks.html", {'tasks' : tasks})
 
-
+@login_required
 def create_task(request):
 
     if request.method == "GET":
@@ -96,8 +98,9 @@ def create_task(request):
                 'form' : TaskForm,
                 'error' : 'Introduce datos válidos'
             })
-    
-        
+
+
+@login_required 
 def task_detail(request, task_id):
     if request.method == "GET":
         task = get_object_or_404(Tasks ,pk=task_id, user=request.user)
@@ -112,7 +115,7 @@ def task_detail(request, task_id):
         except ValueError:
             return render (request, 'task_detail.html', {'task' : task, 'form' :form, 'eror' : "Error al actulizar"})
 
-
+@login_required
 def completed_task(request, task_id):
     task = get_object_or_404(Tasks, pk=task_id, user=request.user)
     if request.method == "POST":
@@ -120,7 +123,7 @@ def completed_task(request, task_id):
         task.save()
         return redirect('tasks')    
 
-
+@login_required
 def delete_task(request, task_id):
     task = get_object_or_404(Tasks, pk=task_id, user=request.user)
     if request.method == "POST":
